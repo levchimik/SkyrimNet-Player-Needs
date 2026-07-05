@@ -30,7 +30,7 @@
               </typeDescriptor>
             </plugin>
             <plugin name="Intoxication prompt">
-              <description>Adds a SkyrimNet bio section describing how drunk an actor is (player or NPC), driven by the snpn_drunk decorator from Core. Portable across modlists (Requiem, CACO, Last Seed, SunHelm, Conner's, Alcoholic Lite) and aware of "holds their liquor" perks. REQUIRES Core (leave Core selected).</description>
+              <description>Adds a SkyrimNet bio section describing how drunk an actor is (player or NPC), driven by the snpn_drunk decorator from Core. Portable across modlists (Requiem, CACO, Last Seed, SunHelm, Conner's, Alcoholic Lite, Starfrost) and aware of "holds their liquor" perks. REQUIRES Core (leave Core selected).</description>
               <files>
                 <folder source="IntoxicationPrompt" destination="" priority="0"/>
               </files>

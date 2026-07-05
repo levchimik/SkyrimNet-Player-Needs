@@ -24,7 +24,7 @@ Set **Response = thought** (or audible) with your own probability/cooldown, and 
 An `snpn_drunk` decorator reports how drunk any actor is — **player or NPC** — mapped to tiers (tipsy → drunk → very drunk → blind drunk). It's portable across modlists, auto-detecting whichever alcohol system is installed:
 
 - **Requiem** (`REQ_Storage_Alcohol` rank, using Requiem's own 25/50/75/100 tiers)
-- **CACO**, **Last Seed**, **SunHelm**, **Conner's Survival**, **Alcoholic Lite Effects**
+- **CACO**, **Last Seed**, **SunHelm**, **Conner's Survival**, **Alcoholic Lite Effects**, **Starfrost** (Simonrim, with Gourmet)
 
 It also understands **tolerance**: characters with a "holds their liquor" perk (Requiem's *Drunken Combat*, *Boozy Bard*, the *Addict* trait, etc.) are described as functional and steady despite a high blood-alcohol level, not stumbling drunk.
 

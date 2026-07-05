@@ -6,8 +6,12 @@
 {% set subjectPronoun = actor.subjectivePronoun %}
 {% set possessivePronoun = actor.possessivePronoun %}
 
-{# ---- Stress (Stress and Fear mod: global Stress_Total 0-100, gated by Stress_Enabled) ---- #}
-{% if default(get_global_value("Stress_Enabled"), 0) >= 1 %}
+{# ---- Stress (Stress and Fear mod: global Stress_Total 0-100, gated by Stress_Enabled) ----
+       PLAYER-ONLY guard: Stress_Total is a single game-wide global = the PLAYER's stress. Without
+       is_player, an NPC's first-person thought (full/thoughts/transform render) would narrate the
+       player's stress as the NPC's own. Phobia/Overcome sections below are actor-scoped
+       (has_spell/has_perk on actorUUID) so they are already NPC-safe and need no guard. #}
+{% if is_player(actorUUID) and default(get_global_value("Stress_Enabled"), 0) >= 1 %}
 {% set stress = default(get_global_value("Stress_Total"), 0) %}
 {% if stress >= 86 %}
 ## Stress
@@ -50,7 +54,9 @@ Brushes with death have left {{ actorName }} with genuine phobias—{{ subjectPr
        "Stress_FearEnabled"), tested with has_spell -- gained from near-death encounters.
      * Overcome fears: Stress_Champion_<Type> PERKS (tested with has_perk) -- granted when
        a phobia is conquered; "Increased Damage" (+10% attack/spell magnitude vs that type).
-   Renders only in first-person modes; entirely silent (globals absent) when the mod
-   isn't installed, so it is safe on any modlist. Leading lines carry render_mode + {% if
+   Renders only in first-person modes; the Stress section is additionally is_player-guarded
+   (Stress_Total is a game-wide global = the player's), while Phobia/Overcome are actor-scoped
+   (has_spell/has_perk) and safe for NPCs. Entirely silent (globals absent) when the mod isn't
+   installed, so it is safe on any modlist. Leading lines carry render_mode + {% if
    to satisfy SkyrimNet's first-5-lines rule.
    ------------------------------------------------------------------------------ #}

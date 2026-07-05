@@ -261,52 +261,89 @@ EndFunction
 ; The returned number lands on the prompt's (0173_snpn_intoxication) 25/50/75/100 tier
 ; scale: <25 sober, >=25 tipsy, >=50 drunk, >=75 very drunk, >=100 blind drunk.
 ;
-; Per-mod handling (checked in order; first INSTALLED mod wins):
-;   1. Requiem  -- REQ_Storage_Alcohol faction rank, RAW 0-127 (its own UI tiers are
-;                  25/50/75/100). One strong drink adds a lot (Black-Briar Mead = +80).
-;   2. CACO     -- CACO_AlcoholDrunkFaction "inebriation points" rank, tiers 10/20/30/40/50.
+; RESOLUTION when SEVERAL alcohol mods are installed at once: MORE DETAILED MOD WINS.
+; The systems are probed MOST-GRANULAR -> LEAST-GRANULAR, and the FIRST one that is
+; actually REPORTING intoxication (>0) is returned -- so a fine-grained reading (e.g.
+; Requiem's exact 0-127 rank) always beats a coarser one (e.g. a binary "drunk"). Two
+; further rules keep it honest:
+;   * A more-detailed system that is installed but reads SOBER does NOT mask a coarser
+;     system that reads DRUNK -- on a 0 reading we fall through and keep looking, only
+;     settling on "sober" once every precise system has been asked. (So detail decides
+;     the WINNER among systems that disagree on the level, without a sober high-detail
+;     system hiding a genuinely-drunk low-detail one.)
+;   * The unverified fuzzy fallback is used ONLY when NO precise system is installed, so
+;     its guesses can never override or false-positive against a real, precise system.
+;
+; Granularity order (each returns the moment it reports >0):
+;   1. Requiem  -- REQ_Storage_Alcohol faction rank, RAW 0-127 returned directly (finest).
+;   2. CACO     -- CACO_AlcoholDrunkFaction "inebriation points", tiers 10/20/30/40/50.
 ;   3. Last Seed-- _Seed_AttributeDrunk global (0-120), tiers 20/40/60/80/100.
-;   4. Conner's -- CRSurvival_AlcoholDoseValue global (drinks; limit 4, hangover 5).
-;   5. Alcoholic Lite Effects -- 5 staged magic effects Drunk_Effect1..5 (check high->low).
+;   4. Alcoholic Lite Effects -- 5 staged magic effects Drunk_Effect1..5 (check high->low).
+;   5. Conner's -- CRSurvival_AlcoholDoseValue global (drinks; limit 4, hangover 5) + buzzed.
 ;   6. SunHelm  -- single binary "Intoxicated" effect -> "drunk".
-;   7. Fallback -- unverified best-effort binary net for other/older alcohol mods.
+;   7. Starfrost -- keyword MAG_DrinkAlcoholFortify (Simonrim, needs Gourmet); binary -> "drunk".
+;   8. Fallback -- unverified best-effort binary net, ONLY if none of 1-7 is installed.
 ; 5-stage mods map onto the 4 prompt tiers as {stage1->25, 2->50, 3->65, 4->80, 5->100}.
 ; Drugs (skooma/cannabis) are intentionally NOT counted here -- alcohol only.
 ; Only the Requiem path is live-tested (the others' FormIDs are verified from serialized
-; ESPs but those mods aren't in this modlist). The chain is additive -- absent mods skip.
+; ESPs but those mods aren't in this modlist).
 ; =============================================================================
 String Function SNPN_Drunk(Actor akActor) Global
     if !akActor
         return "0"
     endif
 
-    ; 1. Requiem: RAW faction rank 0-127 (prompt reads it against 25/50/75/100 directly).
+    Bool precise = false ; any precise (non-fuzzy) alcohol system installed? gates the fallback.
+
+    ; 1. Requiem (finest): RAW faction rank 0-127, returned directly against 25/50/75/100.
     Int rank = SNPN_FacRank(akActor, 0xAD382D, "Requiem.esp")
     if rank > -2 ; faction form exists => Requiem installed
-        if rank < 0 ; not in the faction = stone sober
-            rank = 0
+        precise = true
+        if rank > 0 ; in the faction with a live rank => report it (else fall through as sober)
+            return rank as String
         endif
-        return rank as String
     endif
 
-    ; 2. CACO: inebriation-point faction rank, Requiem-like. Tiers 10/20/30/40/50.
+    ; 2. CACO: inebriation-point faction rank. Tiers 10/20/30/40/50.
     Int caco = SNPN_FacRank(akActor, 0x2BBAB6, "Complete Alchemy & Cooking Overhaul.esp")
     if caco > -2
-        if caco < 0
-            caco = 0
+        precise = true
+        Int cs = SNPN_Bucket(caco, 10, 20, 30, 40, 50)
+        if cs > 0
+            return cs as String
         endif
-        return SNPN_Bucket(caco, 10, 20, 30, 40, 50) as String
     endif
 
     ; 3. Last Seed: _Seed_AttributeDrunk global holds the 0-120 drunk value.
     Float ls = SNPN_GlobVal(0x010830, "LastSeed.esp")
     if ls > -1.0
-        return SNPN_Bucket(ls as Int, 20, 40, 60, 80, 100) as String
+        precise = true
+        Int lss = SNPN_Bucket(ls as Int, 20, 40, 60, 80, 100)
+        if lss > 0
+            return lss as String
+        endif
     endif
 
-    ; 4. Conner's Survival: a dose counter global (drinks). Limit 4, hangover 5.
+    ; 4. Alcoholic Lite Effects: 5 staged magic effects; highest present wins.
+    if SNPN_FormPresent(0x805, "Alcoholic Lite Effects.esp")
+        precise = true
+        if SNPN_ChkEff(akActor, 0x809, "Alcoholic Lite Effects.esp")
+            return "100"
+        elseif SNPN_ChkEff(akActor, 0x808, "Alcoholic Lite Effects.esp")
+            return "80"
+        elseif SNPN_ChkEff(akActor, 0x807, "Alcoholic Lite Effects.esp")
+            return "65"
+        elseif SNPN_ChkEff(akActor, 0x806, "Alcoholic Lite Effects.esp")
+            return "50"
+        elseif SNPN_ChkEff(akActor, 0x805, "Alcoholic Lite Effects.esp")
+            return "25"
+        endif
+    endif
+
+    ; 5. Conner's Survival: a dose counter global (drinks). Limit 4, hangover 5.
     Float cd = SNPN_GlobVal(0x056993, "Conner's Survival Mode.esp")
     if cd > -1.0
+        precise = true
         Int d = cd as Int
         if d >= 5
             return "100"
@@ -319,29 +356,36 @@ String Function SNPN_Drunk(Actor akActor) Global
         elseif SNPN_ChkEff(akActor, 0x042571, "Conner's Survival Mode.esp")
             return "50" ; buzzed effect still up though counter already ticked to 0
         endif
-        return "0"
-    endif
-
-    ; 5. Alcoholic Lite Effects: 5 staged magic effects; highest present wins.
-    if SNPN_ChkEff(akActor, 0x809, "Alcoholic Lite Effects.esp")
-        return "100"
-    elseif SNPN_ChkEff(akActor, 0x808, "Alcoholic Lite Effects.esp")
-        return "80"
-    elseif SNPN_ChkEff(akActor, 0x807, "Alcoholic Lite Effects.esp")
-        return "65"
-    elseif SNPN_ChkEff(akActor, 0x806, "Alcoholic Lite Effects.esp")
-        return "50"
-    elseif SNPN_ChkEff(akActor, 0x805, "Alcoholic Lite Effects.esp")
-        return "25"
     endif
 
     ; 6. SunHelm: single binary "Intoxicated" effect.
-    if SNPN_ChkEff(akActor, 0x36D062, "SunHelmSurvival.esp")
-        return "60"
+    if SNPN_FormPresent(0x36D062, "SunHelmSurvival.esp")
+        precise = true
+        if SNPN_ChkEff(akActor, 0x36D062, "SunHelmSurvival.esp")
+            return "60"
+        endif
     endif
 
-    ; 7. Last-resort binary net (unverified FormID guesses for other/older alcohol mods;
-    ;    a wrong ID just resolves to None and is skipped, so this is safe if imprecise).
+    ; 7. Starfrost (Simonrim): being "Drunk" = an active magic effect carrying keyword
+    ;    MAG_DrinkAlcoholFortify (ADA149, injected into Update.esm by Starfrost; needs Gourmet's
+    ;    alcohol). This is exactly the condition Starfrost's own "Drunk" ability tests, so the
+    ;    keyword IS the mod's authoritative intoxication signal. Flat, single-tier (Starfrost's
+    ;    alcohol is a lite +25 Warmth buff, ungraduated) -> "drunk". Absent Starfrost, Update.esm
+    ;    has no such form so GetFormFromFile returns None and this is skipped.
+    if SNPN_FormPresent(0xADA149, "Update.esm")
+        precise = true
+        if SNPN_ChkKw(akActor, 0xADA149, "Update.esm")
+            return "50"
+        endif
+    endif
+
+    ; 8. Every precise system was asked and none reported intoxication.
+    if precise
+        return "0" ; a real, precise system is installed and reads sober -- trust it.
+    endif
+
+    ; 9. Last-resort binary net (unverified FormID guesses for other/older alcohol mods),
+    ;    reached ONLY when no precise system is installed so it can't override a real one.
     if SNPN_HasAnyAlcohol(akActor)
         return "60"
     endif
@@ -426,6 +470,23 @@ EndFunction
 Bool Function SNPN_ChkEff(Actor a, Int formID, String plugin) Global
     MagicEffect e = Game.GetFormFromFile(formID, plugin) as MagicEffect
     if e && a.HasMagicEffect(e)
+        return true
+    endif
+    return false
+EndFunction
+
+; True if a form-by-file EXISTS in the load order (mod installed), regardless of whether any
+; effect is currently active. Lets the effect/keyword-based systems mark themselves "present"
+; (so the fuzzy fallback stays disabled) even when the actor is installed-but-sober.
+Bool Function SNPN_FormPresent(Int formID, String plugin) Global
+    return Game.GetFormFromFile(formID, plugin) != None
+EndFunction
+
+; True if the actor has an active magic effect carrying keyword formID-by-file. Returns false
+; (form None) when the plugin/keyword isn't present, so it's safe on modlists lacking the mod.
+Bool Function SNPN_ChkKw(Actor a, Int formID, String plugin) Global
+    Keyword k = Game.GetFormFromFile(formID, plugin) as Keyword
+    if k && a.HasMagicEffectWithKeyword(k)
         return true
     endif
     return false

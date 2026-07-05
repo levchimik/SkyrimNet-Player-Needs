@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fomod>
+  <Name>SkyrimNet Player Needs</Name>
+  <Author>levchimik</Author>
+  <Version>1.0.0</Version>
+  <Website></Website>
+  <Description>Surfaces the player's state to SkyrimNet: survival needs (hunger, thirst, cold, exhaustion), intoxication (with perk/tolerance awareness), and item consumption. Consumption is reported as native Player Reactions events (configure thought/probability/cooldown in SkyrimNet Settings), and drunkenness is exposed via portable cross-mod decorators.</Description>
+  <Groups>
+    <element>SkyrimNet</element>
+    <element>Gameplay Effects and Changes</element>
+  </Groups>
+</fomod>

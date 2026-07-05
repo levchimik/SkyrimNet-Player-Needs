@@ -1,0 +1,6 @@
+# Built FOMOD archives (distributed via GitHub Releases, not committed)
+*.7z
+*.zip
+
+# Local extract-test scratch
+fomod-verify/

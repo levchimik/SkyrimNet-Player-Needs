@@ -1,0 +1,39 @@
+{% if render_mode == "full" or render_mode == "thoughts" or render_mode == "transform" or render_mode == "action" or render_mode == "target" %}
+{% if actorUUID and actorUUID != 0 %}
+{% set actor = decnpc(actorUUID) %}
+{% set actorName = actor.name %}
+{% set subjectPronoun = actor.subjectivePronoun %}
+{% set possessivePronoun = actor.possessivePronoun %}
+{% set drunk = default(snpn_drunk(actorUUID), 0) %}
+{% set tolerant = default(snpn_holds_liquor(actorUUID), 0) %}
+{% if drunk >= 25 %}
+## Intoxication
+{% if tolerant >= 1 %}
+{{ actorName }} has been drinking hard and carries a heavy load of alcohol, but {{ subjectPronoun }} holds {{ possessivePronoun }} liquor extraordinarily well—no blurred vision, no stumbling, no slurring. It reads only as warmth and easy confidence: {{ subjectPronoun }} is looser-tongued, bolder, and more gregarious than sober, yet {{ possessivePronoun }} hands stay steady and {{ possessivePronoun }} wits stay sharp. {{ subjectPronoun | capitalize }} can drink most people under the table without it showing.
+{% elif drunk >= 100 %}
+{{ actorName }} is blind drunk. The room tilts and swims, {{ possessivePronoun }} thoughts scatter before {{ subjectPronoun }} can finish them, and {{ subjectPronoun }} can barely stand. Words come out slurred and half-formed. {{ subjectPronoun | capitalize }} has no filter left—whatever crosses {{ possessivePronoun }} mind spills straight out, and tomorrow {{ subjectPronoun }} likely won't remember any of it.
+{% elif drunk >= 75 %}
+{{ actorName }} is very drunk. {{ possessivePronoun | capitalize }} balance is unreliable and {{ possessivePronoun }} speech is noticeably slurred. {{ subjectPronoun | capitalize }} feels invincible and loose-tongued, prone to bold declarations, poor decisions, and saying things {{ subjectPronoun }} might regret. Everything seems funnier or more profound than it is.
+{% elif drunk >= 50 %}
+{{ actorName }} is drunk. A warm haze softens {{ possessivePronoun }} judgment; {{ subjectPronoun }} is louder, more confident, and less guarded than usual. {{ subjectPronoun | capitalize }} slurs the occasional word and finds {{ possessivePronoun }} inhibitions slipping away.
+{% else %}
+{{ actorName }} is tipsy. There's a pleasant looseness to {{ possessivePronoun }} limbs and tongue. {{ subjectPronoun | capitalize }} feels sociable and relaxed, a little bolder than when sober, though still mostly in control.
+{% endif %}
+{% endif %}
+{% endif %}
+{% endif %}
+{# ------------------------------------------------------------------------------
+   SNPlayerNeeds - Intoxication (any actor: player OR NPC, all perception modes so a
+   drunk NPC is perceivable by others). Reads the custom `snpn_drunk` decorator
+   (registered by SNConsume_PlayerAlias). It returns an intoxication score:
+     * Requiem present -> the RAW REQ_Storage_Alcohol faction rank (0-127). Requiem's
+       own drunk UI tiers are rank >=25 / >=50 / >=75 / >=100, which is why the
+       thresholds below are 25/50/75/100 (NOT a 0-100 scale). One strong drink adds a
+       lot (Black-Briar Mead = +80), so a single bottle can reach the upper tiers.
+     * No Requiem -> a binary cross-mod alcohol check (SunHelm/iNeed/LastSeed/RND/ADER/
+       CACO/alcoholiceffect/...) resolved by GetFormFromFile, returning 60 (Level-2
+       "drunk") when any is active, so it works on OTHER modlists too.
+   NOTE: snpn_drunk returns a NUMBER, so use it directly -- do NOT wrap in to_number
+   (to_number rejects a non-string argument and throws).
+   Leading lines carry render_mode + {% if to satisfy the first-5-lines rule.
+   ------------------------------------------------------------------------------ #}

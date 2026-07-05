@@ -1,0 +1,147 @@
+{% set first_person = (render_mode == "transform" or render_mode == "full" or render_mode == "thoughts") %}
+{% if first_person %}
+{% set actor = decnpc(actorUUID) %}
+{% set actorName = actor.name %}
+{% set subjectPronoun = actor.subjectivePronoun %}
+{% set objectivePronoun = actor.objectivePronoun %}
+{% set possessivePronoun = actor.possessivePronoun %}
+
+{# Hunger Status - 5 stages (Stage 1-5 Display Effects) #}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage5DisplayEffect") %}
+## Hunger
+{{ actorName }}'s stomach feels like it's consuming itself. The gnawing ache has become unbearable, and every step feels heavier than the last. {{ subjectPronoun | capitalize }}'s vision occasionally blurs, and {{ subjectPronoun }} can barely focus on anything but the desperate need for food. {{ subjectPronoun | capitalize }} is not just hungry—{{ subjectPronoun }} is starving, and {{ possessivePronoun }} body is beginning to shut down.
+
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage4DisplayEffect") %}
+## Hunger
+{{ actorName }}'s stomach churns with intense, cramping hunger. The emptiness is maddening—every sound reminds {{ objectivePronoun }} of food, and {{ possessivePronoun }} concentration wavers. {{ possessivePronoun | capitalize }} hands shake slightly, and {{ subjectPronoun }} feels weak. {{ subjectPronoun | capitalize }} needs to eat something substantial soon, or {{ possessivePronoun }} condition will worsen significantly.
+
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage3DisplayEffect") %}
+## Hunger
+{{ actorName }}'s stomach protests loudly. There's a persistent ache in {{ possessivePronoun }} belly that's hard to ignore. {{ subjectPronoun | capitalize }} finds {{ objectivePronoun }}self thinking about food more often, and {{ possessivePronoun }} energy feels somewhat depleted. A good meal would help {{ objectivePronoun }} feel more like {{ objectivePronoun }}self.
+
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage2DisplayEffect") %}
+## Hunger
+{{ actorName }} notices a slight pang of hunger. It's not urgent yet, but {{ subjectPronoun }} is aware that {{ possessivePronoun }} last meal was some time ago. A snack or light meal would be pleasant.
+
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage1DisplayEffect") %}
+## Hunger
+{{ actorName }} is satisfied for now, though {{ subjectPronoun }} knows {{ subjectPronoun }}'ll need to eat again eventually.
+
+{% endif %}
+
+{# Fatigue Status - 5 stages (Stage 1-5 Display Effects) #}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage5DisplayEffect") %}
+## Exhaustion
+{{ actorName }}'s body feels like lead. Every movement is a monumental effort, and {{ possessivePronoun }} eyes are so heavy {{ subjectPronoun }} can barely keep them open. {{ possessivePronoun | capitalize }} thoughts are sluggish and scattered, and {{ subjectPronoun }} is struggling to stay conscious. Sleep isn't a luxury anymore—it's a desperate necessity. Without rest soon, {{ subjectPronoun }} may collapse.
+
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage4DisplayEffect") %}
+## Exhaustion
+{{ actorName }} is running on fumes. {{ possessivePronoun | capitalize }} muscles ache with fatigue, and {{ possessivePronoun }} mind feels foggy. Even simple tasks require immense concentration. {{ possessivePronoun | capitalize }} reflexes are sluggish, and {{ subjectPronoun }} knows {{ subjectPronoun }} is not at {{ possessivePronoun }} best. {{ subjectPronoun | capitalize }} desperately needs proper sleep to recover.
+
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage3DisplayEffect") %}
+## Fatigue
+{{ actorName }} feels noticeably tired. {{ possessivePronoun | capitalize }} eyelids feel heavy, and {{ possessivePronoun }} movements are slower than usual. {{ subjectPronoun | capitalize }} has noticed {{ possessivePronoun }} reactions aren't as sharp as they should be. Some rest would do {{ objectivePronoun }} good.
+
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage2DisplayEffect") %}
+## Fatigue
+{{ actorName }} is starting to feel a bit tired. Nothing serious, but {{ subjectPronoun }} is aware that {{ subjectPronoun }} could use some sleep soon.
+
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage1DisplayEffect") %}
+## Well Rested
+{{ actorName }} feels refreshed and energized. {{ subjectPronoun | capitalize }} slept well and is ready for whatever comes next.
+
+{% endif %}
+
+{# Cold Status - 6 stages (Stage 0-5 Display Effects) #}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage5DisplayEffect") %}
+## Freezing
+{{ actorName }}'s body is numb with cold. {{ subjectPronoun | capitalize }} can barely feel {{ possessivePronoun }} extremities, and violent shivering racks {{ possessivePronoun }} frame. {{ possessivePronoun | capitalize }} breath comes in shallow gasps, and {{ possessivePronoun }} teeth chatter so hard {{ subjectPronoun }} is afraid they might crack. Hypothermia is setting in, and {{ subjectPronoun }} is in serious danger. {{ subjectPronoun | capitalize }} needs warmth immediately—shelter, fire, warm clothing, anything to combat this deadly cold.
+
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage4DisplayEffect") %}
+## Severe Cold
+The cold is almost unbearable for {{ actorName }}. {{ possessivePronoun | capitalize }} fingers and toes are numb, and shivering consumes {{ possessivePronoun }} energy. {{ possessivePronoun | capitalize }} breath mists heavily in the air, and {{ subjectPronoun }} is struggling to maintain {{ possessivePronoun }} body temperature. {{ subjectPronoun | capitalize }} needs to find warmth soon or risk serious harm. Shelter or a fire would be a lifesaver.
+
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage3DisplayEffect") %}
+## Cold
+{{ actorName }} is uncomfortably cold. The chill seeps into {{ possessivePronoun }} bones, and {{ subjectPronoun }} finds {{ objectivePronoun }}self shivering frequently. {{ possessivePronoun | capitalize }} breath is visible in the air. Warmer clothing, a fire, or shelter would help considerably.
+
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage2DisplayEffect") %}
+## Chilled
+There's a noticeable chill in the air, and {{ actorName }} feels it. A light shiver runs through {{ objectivePronoun }} occasionally. A cloak or moving to a warmer location would be welcome.
+
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage1DisplayEffect") %}
+## Cool
+{{ actorName }} feels pleasantly cool. The temperature is comfortable, though {{ subjectPronoun }} could warm up a bit if {{ subjectPronoun }} wanted to.
+
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage0DisplayEffect") %}
+## Warm
+{{ actorName }} feels warm and comfortable. The temperature is just right.
+
+{% endif %}
+
+{# Thirst Status - LoreRim adds thirst separately (Lorerim - Thirst Notifications).
+   Stages 2-5 are an actual need (Parched -> Severely Dehydrated); 0-1 = fine, not shown. #}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage5Effect") %}
+## Thirst
+{{ actorName }} is severely dehydrated. {{ possessivePronoun | capitalize }} mouth and throat are painfully dry, {{ possessivePronoun }} lips are cracked, and {{ subjectPronoun }} feels dizzy and weak. {{ possessivePronoun | capitalize }} head pounds and {{ subjectPronoun }} can think of little besides water. Without a drink very soon, {{ possessivePronoun }} body will begin to fail.
+
+{% elif has_magic_effect(actorUUID, "Survival_ThirstStage4Effect") %}
+## Thirst
+{{ actorName }} is dehydrated. {{ possessivePronoun | capitalize }} mouth is dry and sticky, a dull headache is building, and {{ possessivePronoun }} energy is flagging. {{ subjectPronoun | capitalize }} badly needs something to drink.
+
+{% elif has_magic_effect(actorUUID, "Survival_ThirstStage3Effect") %}
+## Thirst
+{{ actorName }} is thirsty. {{ possessivePronoun | capitalize }} mouth feels dry and {{ subjectPronoun }} keeps thinking about a cool drink. Water, ale, or mead would be very welcome.
+
+{% elif has_magic_effect(actorUUID, "Survival_ThirstStage2Effect") %}
+## Thirst
+{{ actorName }} is parched. There's a noticeable dryness in {{ possessivePronoun }} mouth—not desperate yet, but {{ subjectPronoun }} could really go for a drink soon.
+
+{% endif %}
+
+{# Summary Section #}
+{% set hunger_level = 0 %}
+{% set fatigue_level = 0 %}
+{% set cold_level = 0 %}
+{% set thirst_level = 0 %}
+
+{% if has_magic_effect(actorUUID, "Survival_HungerStage1DisplayEffect") %}{% set hunger_level = 1 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage2DisplayEffect") %}{% set hunger_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage3DisplayEffect") %}{% set hunger_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage4DisplayEffect") %}{% set hunger_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage5DisplayEffect") %}{% set hunger_level = 5 %}{% endif %}
+
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage1DisplayEffect") %}{% set fatigue_level = 1 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage2DisplayEffect") %}{% set fatigue_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage3DisplayEffect") %}{% set fatigue_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage4DisplayEffect") %}{% set fatigue_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage5DisplayEffect") %}{% set fatigue_level = 5 %}{% endif %}
+
+{% if has_magic_effect(actorUUID, "Survival_ColdStage1DisplayEffect") %}{% set cold_level = 1 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage2DisplayEffect") %}{% set cold_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage3DisplayEffect") %}{% set cold_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage4DisplayEffect") %}{% set cold_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage5DisplayEffect") %}{% set cold_level = 5 %}{% endif %}
+
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage2Effect") %}{% set thirst_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage3Effect") %}{% set thirst_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage4Effect") %}{% set thirst_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage5Effect") %}{% set thirst_level = 5 %}{% endif %}
+
+{% if hunger_level > 1 or fatigue_level > 1 or cold_level > 1 or thirst_level > 1 %}
+## Current Survival Status
+{{ actorName }}'s immediate needs: {% if hunger_level > 1 %}Food (severity: {{ hunger_level }}/5){% if fatigue_level > 1 or cold_level > 1 or thirst_level > 1 %}, {% endif %}{% endif %}{% if fatigue_level > 1 %}Rest (severity: {{ fatigue_level }}/5){% if cold_level > 1 or thirst_level > 1 %}, {% endif %}{% endif %}{% if cold_level > 1 %}Warmth (severity: {{ cold_level }}/5){% if thirst_level > 1 %}, {% endif %}{% endif %}{% if thirst_level > 1 %}Water (severity: {{ thirst_level }}/5){% endif %}
+{% endif %}
+
+{% endif %}
+{# ------------------------------------------------------------------------------
+   SNPlayerNeeds - Survival Needs (player-only). Reads the ACTUAL CC Survival Mode
+   display magic effects (Survival_HungerStageN / _ExhaustionStageN / _ColdStageN) plus
+   LoreRim's thirst effects (Survival_ThirstStageN, from Lorerim - Thirst Notifications:
+   Stage2 Parched -> Stage5 Severely Dehydrated) via the has_magic_effect decorator.
+   Renders only in first-person modes
+   (transform/full/thoughts). Complements SeverActions' 0170 survival prompt, which
+   tracks FOLLOWERS/NPCs via its own sever_hunger system.
+   NOTE: leading lines intentionally carry render_mode + {% if to satisfy SkyrimNet's
+   "first 5 lines of a character_bio submodule must contain render_mode and an if" rule.
+   ------------------------------------------------------------------------------ #}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+  <moduleName>SkyrimNet Player Needs</moduleName>
+  <moduleImage path="fomod\SNPlayerNeeds.jpg" showImage="true" showFade="true" height="-1"/>
+  <installSteps order="Explicit">
+    <installStep name="Components">
+      <optionalFileGroups order="Explicit">
+        <group name="Core (required)" type="SelectAll">
+          <plugins order="Explicit">
+            <plugin name="Core - ESP + scripts">
+              <description>Required. Installs SNPlayerNeeds.esp and the tracker script: reports the player's potion/food/ingredient consumption to SkyrimNet as native Player Reactions events (Player Ate Food / Drank Potion / Ate Ingredient / Consumed), and registers the snpn_drunk and snpn_holds_liquor decorators used by the Intoxication prompt.</description>
+              <files>
+                <folder source="Core" destination="" priority="0"/>
+              </files>
+              <typeDescriptor>
+                <type name="Required"/>
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Prompt Modules" type="SelectAny">
+          <plugins order="Explicit">
+            <plugin name="Survival Needs prompt">
+              <description>Recommended. Adds a first-person SkyrimNet bio section describing the player's hunger, thirst, cold, and exhaustion, read from CC Survival Mode / SMI / LoreRim thirst effects via has_magic_effect. Safe to skip if you don't run a survival mod.</description>
+              <files>
+                <folder source="SurvivalPrompt" destination="" priority="0"/>
+              </files>
+              <typeDescriptor>
+                <type name="Recommended"/>
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Intoxication prompt">
+              <description>Recommended. Adds a SkyrimNet bio section describing how drunk an actor is (player or NPC), driven by the snpn_drunk decorator from Core. Portable across modlists (Requiem, CACO, Last Seed, SunHelm, Conner's, Alcoholic Lite) and aware of "holds their liquor" perks. Requires Core.</description>
+              <files>
+                <folder source="IntoxicationPrompt" destination="" priority="0"/>
+              </files>
+              <typeDescriptor>
+                <type name="Recommended"/>
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+  </installSteps>
+</config>

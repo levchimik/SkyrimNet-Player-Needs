@@ -5,15 +5,15 @@
   <installSteps order="Explicit">
     <installStep name="Components">
       <optionalFileGroups order="Explicit">
-        <group name="Core (required)" type="SelectAll">
+        <group name="Core (ESP + scripts)" type="SelectAny">
           <plugins order="Explicit">
-            <plugin name="Core - ESP + scripts">
-              <description>Required. Installs SNPlayerNeeds.esp and the tracker script: reports the player's potion/food/ingredient consumption to SkyrimNet as native Player Reactions events (Player Ate Food / Drank Potion / Ate Ingredient / Consumed), and registers the snpn_drunk and snpn_holds_liquor decorators used by the Intoxication prompt.</description>
+            <plugin name="Core - consumption events + intoxication decorators">
+              <description>Installs SNPlayerNeeds.esp and the tracker script: reports the player's potion/food/ingredient consumption to SkyrimNet as native Player Reactions events (Player Ate Food / Drank Potion / Ate Ingredient / Consumed), and registers the snpn_drunk / snpn_holds_liquor decorators the Intoxication prompt uses. Needed ONLY for consumption events and the Intoxication prompt — the Survival Needs and Stress and Fear prompts are pure prompts and work without it. On by default; deselect if you only want those standalone bio prompts.</description>
               <files>
                 <folder source="Core" destination="" priority="0"/>
               </files>
               <typeDescriptor>
-                <type name="Required"/>
+                <type name="Recommended"/>
               </typeDescriptor>
             </plugin>
           </plugins>
@@ -21,7 +21,7 @@
         <group name="Prompt Modules" type="SelectAny">
           <plugins order="Explicit">
             <plugin name="Survival Needs prompt">
-              <description>Recommended. Adds a first-person SkyrimNet bio section describing the player's hunger, thirst, cold, and exhaustion, read from CC Survival Mode / SMI / LoreRim thirst effects via has_magic_effect. Safe to skip if you don't run a survival mod.</description>
+              <description>Adds a first-person SkyrimNet bio section describing the player's hunger, thirst, cold, and exhaustion, read from CC Survival Mode / SMI / LoreRim thirst effects via the built-in has_magic_effect decorator. Pure prompt — no dependency on Core. Silent if you don't run a survival mod.</description>
               <files>
                 <folder source="SurvivalPrompt" destination="" priority="0"/>
               </files>
@@ -30,12 +30,31 @@
               </typeDescriptor>
             </plugin>
             <plugin name="Intoxication prompt">
-              <description>Recommended. Adds a SkyrimNet bio section describing how drunk an actor is (player or NPC), driven by the snpn_drunk decorator from Core. Portable across modlists (Requiem, CACO, Last Seed, SunHelm, Conner's, Alcoholic Lite) and aware of "holds their liquor" perks. Requires Core.</description>
+              <description>Adds a SkyrimNet bio section describing how drunk an actor is (player or NPC), driven by the snpn_drunk decorator from Core. Portable across modlists (Requiem, CACO, Last Seed, SunHelm, Conner's, Alcoholic Lite) and aware of "holds their liquor" perks. REQUIRES Core (leave Core selected).</description>
               <files>
                 <folder source="IntoxicationPrompt" destination="" priority="0"/>
               </files>
               <typeDescriptor>
                 <type name="Recommended"/>
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Stress and Fear prompt">
+              <description>Adds a first-person bio section describing the player's stress level, active creature phobias, and phobias they've overcome, read from the Stress And Fear mod (Nexus 116522) via SkyrimNet's built-in decorators. Pure prompt — no dependency on Core. Auto-selected when Stress and Fear.esp is present; silent otherwise.</description>
+              <files>
+                <folder source="StressFearPrompt" destination="" priority="0"/>
+              </files>
+              <typeDescriptor>
+                <dependencyType>
+                  <defaultType name="Optional"/>
+                  <patterns>
+                    <pattern>
+                      <dependencies operator="And">
+                        <fileDependency file="Stress and Fear.esp" state="Active"/>
+                      </dependencies>
+                      <type name="Recommended"/>
+                    </pattern>
+                  </patterns>
+                </dependencyType>
               </typeDescriptor>
             </plugin>
           </plugins>

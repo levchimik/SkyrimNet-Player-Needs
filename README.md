@@ -31,6 +31,9 @@ It also understands **tolerance**: characters with a "holds their liquor" perk (
 ### 🥖 Survival needs
 A first-person bio section describing the player's **hunger, thirst, cold, and exhaustion**, read live from CC Survival Mode / Survival Mode Improved (and LoreRim's thirst notifications) via `has_magic_effect`.
 
+### 😰 Stress & fear
+A first-person bio section describing the player's **stress level** (calm → breaking point) and any **creature phobias** they've picked up from near-death encounters, read from the [Stress And Fear](https://www.nexusmods.com/skyrimspecialedition/mods/116522) mod. Prompt-only and silent if that mod isn't installed.
+
 ## Requirements
 
 - **SKSE64**
@@ -40,11 +43,14 @@ A first-person bio section describing the player's **hunger, thirst, cold, and e
 
 ## Installation
 
-Install the FOMOD with **Mod Organizer 2** or **Vortex** and pick your components:
+Install the FOMOD with **Mod Organizer 2** or **Vortex** and pick your components — all default to on except where noted:
 
-- **Core** *(required)* — the ESP, the tracker script, the consumption events, and the intoxication decorators.
-- **Survival Needs prompt** *(optional)* — the hunger/thirst/cold/exhaustion bio section.
-- **Intoxication prompt** *(optional)* — the drunkenness bio section (needs Core).
+- **Core** (ESP + scripts) — consumption events + the intoxication decorators. On by default; deselect if you only want the standalone bio prompts below.
+- **Survival Needs prompt** — hunger/thirst/cold/exhaustion. Pure prompt, works without Core.
+- **Intoxication prompt** — the drunkenness bio section. **Requires Core.**
+- **Stress and Fear prompt** — stress level, active phobias, and overcome phobias. Pure prompt, works without Core. **Auto-selected only when [Stress And Fear](https://www.nexusmods.com/skyrimspecialedition/mods/116522) is installed**, otherwise left off.
+
+The two "pure prompt" modules (Survival, Stress and Fear) need neither the ESP nor Core — they read the relevant mods through SkyrimNet's own decorators and stay silent if those mods aren't present.
 
 After installing, launch the game once, then open **SkyrimNet Settings → Events & Reactions → Player Reactions** and configure how the player reacts to eating/drinking.
 

@@ -1,0 +1,56 @@
+{% set first_person = (render_mode == "transform" or render_mode == "full" or render_mode == "thoughts") %}
+{% if first_person %}
+{% if actorUUID and actorUUID != 0 %}
+{% set actor = decnpc(actorUUID) %}
+{% set actorName = actor.name %}
+{% set subjectPronoun = actor.subjectivePronoun %}
+{% set possessivePronoun = actor.possessivePronoun %}
+
+{# ---- Stress (Stress and Fear mod: global Stress_Total 0-100, gated by Stress_Enabled) ---- #}
+{% if default(get_global_value("Stress_Enabled"), 0) >= 1 %}
+{% set stress = default(get_global_value("Stress_Total"), 0) %}
+{% if stress >= 86 %}
+## Stress
+{{ actorName }} is at a breaking point. {{ possessivePronoun | capitalize }} nerves are frayed raw—{{ subjectPronoun }} is jumpy, irritable, and close to losing composure, {{ possessivePronoun }} hands none too steady. Small provocations could make {{ subjectPronoun }} snap or freeze up. {{ subjectPronoun | capitalize }} badly needs rest, comfort, a stiff drink, or a safe place to breathe.
+{% elif stress >= 66 %}
+## Stress
+{{ actorName }} is under heavy stress. {{ subjectPronoun | capitalize }} is tense and short-tempered, {{ possessivePronoun }} thoughts hard to quiet, and relaxation feels out of reach. Anything that takes the edge off—a hot meal, a drink, sleep, a warm bath—would be very welcome.
+{% elif stress >= 46 %}
+## Stress
+{{ actorName }} is noticeably stressed. There's a tightness in {{ possessivePronoun }} chest and a shortness to {{ possessivePronoun }} temper; {{ subjectPronoun }} is more on edge than usual and would like a chance to unwind.
+{% elif stress >= 26 %}
+## Stress
+{{ actorName }} is carrying some stress—a low, nagging tension. {{ subjectPronoun | capitalize }} is mostly composed but could use a quiet moment.
+{% endif %}
+{% endif %}
+
+{# ---- Fear / phobias (per-creature Stress_PhobiaSpell_* abilities, gated by Stress_FearEnabled) ---- #}
+{% if default(get_global_value("Stress_FearEnabled"), 0) >= 1 %}
+{% set any_fear = has_spell(actorUUID, "Stress_PhobiaSpell_Wolf") or has_spell(actorUUID, "Stress_PhobiaSpell_Dragons") or has_spell(actorUUID, "Stress_PhobiaSpell_Vampires") or has_spell(actorUUID, "Stress_PhobiaSpell_Mages") or has_spell(actorUUID, "Stress_PhobiaSpell_Undead") or has_spell(actorUUID, "Stress_PhobiaSpell_Bandits") or has_spell(actorUUID, "Stress_PhobiaSpell_Falmer") or has_spell(actorUUID, "Stress_PhobiaSpell_Forsworn") or has_spell(actorUUID, "Stress_PhobiaSpell_Hagravens") or has_spell(actorUUID, "Stress_PhobiaSpell_Ghosts") or has_spell(actorUUID, "Stress_PhobiaSpell_Thalmor") or has_spell(actorUUID, "Stress_PhobiaSpell_Bears") or has_spell(actorUUID, "Stress_PhobiaSpell_Sabrecats") or has_spell(actorUUID, "Stress_PhobiaSpell_IceWraiths") or has_spell(actorUUID, "Stress_PhobiaSpell_Werewolves") or has_spell(actorUUID, "Stress_PhobiaSpell_Trolls") or has_spell(actorUUID, "Stress_PhobiaSpell_Dremora") or has_spell(actorUUID, "Stress_PhobiaSpell_Atronachs") or has_spell(actorUUID, "Stress_PhobiaSpell_Dwarven") or has_spell(actorUUID, "Stress_PhobiaSpell_Giants") or has_spell(actorUUID, "Stress_PhobiaSpell_Spriggans") or has_spell(actorUUID, "Stress_PhobiaSpell_Wispmothers") or has_spell(actorUUID, "Stress_PhobiaSpell_Chaurus") or has_spell(actorUUID, "Stress_PhobiaSpell_Spiders") %}
+{% if any_fear %}
+## Fears
+Brushes with death have left {{ actorName }} with genuine phobias—{{ subjectPronoun }} feels real dread and fights noticeably worse against:{% if has_spell(actorUUID, "Stress_PhobiaSpell_Wolf") %} wolves,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Dragons") %} dragons,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Vampires") %} vampires,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Mages") %} hostile mages,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Undead") %} the undead,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Bandits") %} bandits,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Falmer") %} Falmer,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Forsworn") %} the Forsworn,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Hagravens") %} hagravens,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Ghosts") %} ghosts,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Thalmor") %} the Thalmor,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Bears") %} bears,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Sabrecats") %} sabre cats,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_IceWraiths") %} ice wraiths,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Werewolves") %} werewolves,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Trolls") %} trolls,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Dremora") %} dremora,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Atronachs") %} atronachs,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Dwarven") %} Dwarven automatons,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Giants") %} giants,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Spriggans") %} spriggans,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Wispmothers") %} wispmothers,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Chaurus") %} chaurus,{% endif %}{% if has_spell(actorUUID, "Stress_PhobiaSpell_Spiders") %} spiders,{% endif %} confronting them frays {{ possessivePronoun }} nerves further.
+{% endif %}
+{% set any_champ = has_perk(actorUUID, "Stress_Champion_Wolf") or has_perk(actorUUID, "Stress_Champion_Dragons") or has_perk(actorUUID, "Stress_Champion_Vampires") or has_perk(actorUUID, "Stress_Champion_Mages") or has_perk(actorUUID, "Stress_Champion_Undead") or has_perk(actorUUID, "Stress_Champion_Bandits") or has_perk(actorUUID, "Stress_Champion_Falmer") or has_perk(actorUUID, "Stress_Champion_Forsworn") or has_perk(actorUUID, "Stress_Champion_Hagravens") or has_perk(actorUUID, "Stress_Champion_Ghosts") or has_perk(actorUUID, "Stress_Champion_Thalmor") or has_perk(actorUUID, "Stress_Champion_Bears") or has_perk(actorUUID, "Stress_Champion_Sabrecats") or has_perk(actorUUID, "Stress_Champion_IceWraiths") or has_perk(actorUUID, "Stress_Champion_Werewolves") or has_perk(actorUUID, "Stress_Champion_Trolls") or has_perk(actorUUID, "Stress_Champion_Dremora") or has_perk(actorUUID, "Stress_Champion_Atronachs") or has_perk(actorUUID, "Stress_Champion_Dwarven") or has_perk(actorUUID, "Stress_Champion_Giants") or has_perk(actorUUID, "Stress_Champion_Spriggans") or has_perk(actorUUID, "Stress_Champion_Wispmothers") or has_perk(actorUUID, "Stress_Champion_Chaurus") or has_perk(actorUUID, "Stress_Champion_Spiders") %}
+{% if any_champ %}
+## Overcome Fears
+{{ actorName }} has faced down and conquered former terrors—where {{ subjectPronoun }} once felt dread, {{ subjectPronoun }} now fights with hard-won confidence and strikes harder against:{% if has_perk(actorUUID, "Stress_Champion_Wolf") %} wolves,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Dragons") %} dragons,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Vampires") %} vampires,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Mages") %} hostile mages,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Undead") %} the undead,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Bandits") %} bandits,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Falmer") %} Falmer,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Forsworn") %} the Forsworn,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Hagravens") %} hagravens,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Ghosts") %} ghosts,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Thalmor") %} the Thalmor,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Bears") %} bears,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Sabrecats") %} sabre cats,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_IceWraiths") %} ice wraiths,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Werewolves") %} werewolves,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Trolls") %} trolls,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Dremora") %} dremora,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Atronachs") %} atronachs,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Dwarven") %} Dwarven automatons,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Giants") %} giants,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Spriggans") %} spriggans,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Wispmothers") %} wispmothers,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Chaurus") %} chaurus,{% endif %}{% if has_perk(actorUUID, "Stress_Champion_Spiders") %} spiders,{% endif %} a former dread now turned to resolve.
+{% endif %}
+{% endif %}
+
+{% endif %}
+{% endif %}
+{# ------------------------------------------------------------------------------
+   SNPlayerNeeds - Stress & Fear (player-only). Integrates the "Stress And Fear" mod
+   (Nexus 116522) via SkyrimNet's built-in decorators -- NO custom script needed:
+     * Stress: get_global_value("Stress_Total") 0-100 (gated by "Stress_Enabled"),
+       banded 26/46/66/86 (mild/moderate/high/severe). Raised by combat hits; lowered
+       by food, drink, alcohol, sleep, bathing, and shrine blessings.
+     * Fear: per-creature phobia abilities Stress_PhobiaSpell_<Type> (gated by
+       "Stress_FearEnabled"), tested with has_spell -- gained from near-death encounters.
+     * Overcome fears: Stress_Champion_<Type> PERKS (tested with has_perk) -- granted when
+       a phobia is conquered; "Increased Damage" (+10% attack/spell magnitude vs that type).
+   Renders only in first-person modes; entirely silent (globals absent) when the mod
+   isn't installed, so it is safe on any modlist. Leading lines carry render_mode + {% if
+   to satisfy SkyrimNet's first-5-lines rule.
+   ------------------------------------------------------------------------------ #}

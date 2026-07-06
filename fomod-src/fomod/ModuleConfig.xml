@@ -21,7 +21,7 @@
         <group name="Prompt Modules" type="SelectAny">
           <plugins order="Explicit">
             <plugin name="Survival Needs prompt">
-              <description>Adds a first-person SkyrimNet bio section describing the player's hunger, thirst, cold, and exhaustion, read from CC Survival Mode / SMI / LoreRim thirst effects via the built-in has_magic_effect decorator. Pure prompt — no dependency on Core. Silent if you don't run a survival mod.</description>
+              <description>Adds a first-person SkyrimNet bio section describing the player's hunger (including well-fed), thirst, cold, and exhaustion, read via the built-in has_magic_effect decorator from whichever survival system is installed — CC Survival Mode / SMI / Starfrost or SunHelm; thirst from LoreRim's thirst notifications or SunHelm. Pure prompt — no dependency on Core. Silent if you don't run a survival mod.</description>
               <files>
                 <folder source="SurvivalPrompt" destination="" priority="0"/>
               </files>
@@ -55,6 +55,15 @@
                     </pattern>
                   </patterns>
                 </dependencyType>
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Disease prompt">
+              <description>Adds a bio section describing an actor's active disease(s) — Ataxia, Bone Break Fever, Rockjoint, Rattles, Brain Rot, Witbane, Sanguinare Vampiris, food poisoning — with symptoms grounded in each disease's real effect and a severity tag as it worsens. Detected via the built-in has_spell decorator on the disease abilities, so it works for the player AND diseased followers/NPCs. Tuned for LoreRim/Requiem + CC-Survival naming (also detects the vanilla Disease* forms). Pure prompt — no dependency on Core. Silent when no disease is active.</description>
+              <files>
+                <folder source="DiseasePrompt" destination="" priority="0"/>
+              </files>
+              <typeDescriptor>
+                <type name="Recommended"/>
               </typeDescriptor>
             </plugin>
           </plugins>

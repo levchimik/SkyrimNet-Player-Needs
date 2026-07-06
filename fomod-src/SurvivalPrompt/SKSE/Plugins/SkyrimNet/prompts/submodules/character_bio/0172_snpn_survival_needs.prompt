@@ -6,94 +6,116 @@
 {% set objectivePronoun = actor.objectivePronoun %}
 {% set possessivePronoun = actor.possessivePronoun %}
 
-{# Hunger Status - 5 stages (Stage 1-5 Display Effects) #}
-{% if has_magic_effect(actorUUID, "Survival_HungerStage5DisplayEffect") %}
+{# Hunger Status - CC Survival Stage1-5 DisplayEffect / SunHelm _SHHunger01-05Display -> need
+   tiers 1..5. Well Fed (the BEST state, below "satisfied") = CC Survival_HungerStage0HealthRegen
+   (a ConstantEffect named "Hunger - Well Fed"; stage 0 has no Display effect, so this is the
+   detectable stage-0 signal - live in LoreRim via DVSsurvivaltweaks) OR SunHelm _SHHunger00Display.
+   STARFROST: keeps the CC hunger EditorIDs (Survival_HungerStage{0,1,2,4,5}) so those work, but
+   it hijacks the stage-3 spell slot (000881) -> hunger stage 3 shows nothing under Starfrost (minor,
+   transient gap; stages 2 and 4 bracket it). (Starfrost renames cold/exhaustion - handled there.)
+   Rendered as its own bonus block; not a need, so it stays out of the summary (hunger_level 0). #}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage5DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger05Display") %}
 ## Hunger
 {{ actorName }}'s stomach feels like it's consuming itself. The gnawing ache has become unbearable, and every step feels heavier than the last. {{ subjectPronoun | capitalize }}'s vision occasionally blurs, and {{ subjectPronoun }} can barely focus on anything but the desperate need for food. {{ subjectPronoun | capitalize }} is not just hungry—{{ subjectPronoun }} is starving, and {{ possessivePronoun }} body is beginning to shut down.
 
-{% elif has_magic_effect(actorUUID, "Survival_HungerStage4DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage4DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger04Display") %}
 ## Hunger
 {{ actorName }}'s stomach churns with intense, cramping hunger. The emptiness is maddening—every sound reminds {{ objectivePronoun }} of food, and {{ possessivePronoun }} concentration wavers. {{ possessivePronoun | capitalize }} hands shake slightly, and {{ subjectPronoun }} feels weak. {{ subjectPronoun | capitalize }} needs to eat something substantial soon, or {{ possessivePronoun }} condition will worsen significantly.
 
-{% elif has_magic_effect(actorUUID, "Survival_HungerStage3DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage3DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger03Display") %}
 ## Hunger
 {{ actorName }}'s stomach protests loudly. There's a persistent ache in {{ possessivePronoun }} belly that's hard to ignore. {{ subjectPronoun | capitalize }} finds {{ objectivePronoun }}self thinking about food more often, and {{ possessivePronoun }} energy feels somewhat depleted. A good meal would help {{ objectivePronoun }} feel more like {{ objectivePronoun }}self.
 
-{% elif has_magic_effect(actorUUID, "Survival_HungerStage2DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage2DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger02Display") %}
 ## Hunger
 {{ actorName }} notices a slight pang of hunger. It's not urgent yet, but {{ subjectPronoun }} is aware that {{ possessivePronoun }} last meal was some time ago. A snack or light meal would be pleasant.
 
-{% elif has_magic_effect(actorUUID, "Survival_HungerStage1DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage1DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger01Display") %}
 ## Hunger
 {{ actorName }} is satisfied for now, though {{ subjectPronoun }} knows {{ subjectPronoun }}'ll need to eat again eventually.
 
+{% elif has_magic_effect(actorUUID, "Survival_HungerStage0HealthRegen") or has_magic_effect(actorUUID, "_SHHunger00Display") %}
+## Well Fed
+{{ actorName }} is pleasantly well fed. A hearty meal not long ago has left {{ objectivePronoun }} full, content, and nourished—hunger is the last thing on {{ possessivePronoun }} mind, and {{ subjectPronoun }} feels steady and at ease.
+
 {% endif %}
 
-{# Fatigue Status - 5 stages (Stage 1-5 Display Effects) #}
-{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage5DisplayEffect") %}
+{# Fatigue Status - CC Survival Exhaustion Stage1-5 / SunHelm _SHFatigue00-05 / Starfrost
+   MAG_ExhaustionStage1-5DisplayEffect. Starfrost RENAMES the CC exhaustion MGEFs to MAG_* (same
+   FormKeys), so the Survival_* lines miss it and the MAG_* line is what catches Starfrost. SunHelm
+   00 Well Rested + 01 Rested -> tier 1; NOTE SunHelm stage 2 is misspelled _SHFatigue02Dispaly. #}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage5DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue05Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage5DisplayEffect") %}
 ## Exhaustion
 {{ actorName }}'s body feels like lead. Every movement is a monumental effort, and {{ possessivePronoun }} eyes are so heavy {{ subjectPronoun }} can barely keep them open. {{ possessivePronoun | capitalize }} thoughts are sluggish and scattered, and {{ subjectPronoun }} is struggling to stay conscious. Sleep isn't a luxury anymore—it's a desperate necessity. Without rest soon, {{ subjectPronoun }} may collapse.
 
-{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage4DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage4DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue04Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage4DisplayEffect") %}
 ## Exhaustion
 {{ actorName }} is running on fumes. {{ possessivePronoun | capitalize }} muscles ache with fatigue, and {{ possessivePronoun }} mind feels foggy. Even simple tasks require immense concentration. {{ possessivePronoun | capitalize }} reflexes are sluggish, and {{ subjectPronoun }} knows {{ subjectPronoun }} is not at {{ possessivePronoun }} best. {{ subjectPronoun | capitalize }} desperately needs proper sleep to recover.
 
-{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage3DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage3DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue03Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage3DisplayEffect") %}
 ## Fatigue
 {{ actorName }} feels noticeably tired. {{ possessivePronoun | capitalize }} eyelids feel heavy, and {{ possessivePronoun }} movements are slower than usual. {{ subjectPronoun | capitalize }} has noticed {{ possessivePronoun }} reactions aren't as sharp as they should be. Some rest would do {{ objectivePronoun }} good.
 
-{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage2DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage2DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue02Dispaly") or has_magic_effect(actorUUID, "MAG_ExhaustionStage2DisplayEffect") %}
 ## Fatigue
 {{ actorName }} is starting to feel a bit tired. Nothing serious, but {{ subjectPronoun }} is aware that {{ subjectPronoun }} could use some sleep soon.
 
-{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage1DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ExhaustionStage1DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue01Display") or has_magic_effect(actorUUID, "_SHFatigue00Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage1DisplayEffect") %}
 ## Well Rested
 {{ actorName }} feels refreshed and energized. {{ subjectPronoun | capitalize }} slept well and is ready for whatever comes next.
 
 {% endif %}
 
-{# Cold Status - 6 stages (Stage 0-5 Display Effects) #}
-{% if has_magic_effect(actorUUID, "Survival_ColdStage5DisplayEffect") %}
+{# Cold Status - CC Survival ColdStage0-5 / SunHelm _SHColdStage0-5Display / Starfrost
+   MAG_ColdStage0-5DisplayEffect (1:1 by stage). Starfrost RENAMES the CC cold MGEFs to MAG_* (same
+   FormKeys), so the MAG_* line is what catches Starfrost. SunHelm's _SHColdStage5DisplayNoDis
+   disease-off variant also counts as the freezing tier. #}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage5DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage5Display") or has_magic_effect(actorUUID, "_SHColdStage5DisplayNoDis") or has_magic_effect(actorUUID, "MAG_ColdStage5DisplayEffect") %}
 ## Freezing
 {{ actorName }}'s body is numb with cold. {{ subjectPronoun | capitalize }} can barely feel {{ possessivePronoun }} extremities, and violent shivering racks {{ possessivePronoun }} frame. {{ possessivePronoun | capitalize }} breath comes in shallow gasps, and {{ possessivePronoun }} teeth chatter so hard {{ subjectPronoun }} is afraid they might crack. Hypothermia is setting in, and {{ subjectPronoun }} is in serious danger. {{ subjectPronoun | capitalize }} needs warmth immediately—shelter, fire, warm clothing, anything to combat this deadly cold.
 
-{% elif has_magic_effect(actorUUID, "Survival_ColdStage4DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage4DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage4Display") or has_magic_effect(actorUUID, "MAG_ColdStage4DisplayEffect") %}
 ## Severe Cold
 The cold is almost unbearable for {{ actorName }}. {{ possessivePronoun | capitalize }} fingers and toes are numb, and shivering consumes {{ possessivePronoun }} energy. {{ possessivePronoun | capitalize }} breath mists heavily in the air, and {{ subjectPronoun }} is struggling to maintain {{ possessivePronoun }} body temperature. {{ subjectPronoun | capitalize }} needs to find warmth soon or risk serious harm. Shelter or a fire would be a lifesaver.
 
-{% elif has_magic_effect(actorUUID, "Survival_ColdStage3DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage3DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage3Display") or has_magic_effect(actorUUID, "MAG_ColdStage3DisplayEffect") %}
 ## Cold
 {{ actorName }} is uncomfortably cold. The chill seeps into {{ possessivePronoun }} bones, and {{ subjectPronoun }} finds {{ objectivePronoun }}self shivering frequently. {{ possessivePronoun | capitalize }} breath is visible in the air. Warmer clothing, a fire, or shelter would help considerably.
 
-{% elif has_magic_effect(actorUUID, "Survival_ColdStage2DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage2DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage2Display") or has_magic_effect(actorUUID, "MAG_ColdStage2DisplayEffect") %}
 ## Chilled
 There's a noticeable chill in the air, and {{ actorName }} feels it. A light shiver runs through {{ objectivePronoun }} occasionally. A cloak or moving to a warmer location would be welcome.
 
-{% elif has_magic_effect(actorUUID, "Survival_ColdStage1DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage1DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage1Display") or has_magic_effect(actorUUID, "MAG_ColdStage1DisplayEffect") %}
 ## Cool
 {{ actorName }} feels pleasantly cool. The temperature is comfortable, though {{ subjectPronoun }} could warm up a bit if {{ subjectPronoun }} wanted to.
 
-{% elif has_magic_effect(actorUUID, "Survival_ColdStage0DisplayEffect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ColdStage0DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage0Display") or has_magic_effect(actorUUID, "MAG_ColdStage0DisplayEffect") %}
 ## Warm
 {{ actorName }} feels warm and comfortable. The temperature is just right.
 
 {% endif %}
 
-{# Thirst Status - LoreRim adds thirst separately (Lorerim - Thirst Notifications).
-   Stages 2-5 are an actual need (Parched -> Severely Dehydrated); 0-1 = fine, not shown. #}
-{% if has_magic_effect(actorUUID, "Survival_ThirstStage5Effect") %}
+{# Thirst Status - not in CC Survival. Two supported sources, checked together:
+     * LoreRim (Lorerim - Thirst Notifications): Survival_ThirstStage2..5Effect
+     * SunHelm: _SHThirst02..05Display  (00 Quenched / 01 Sated = fine, not shown)
+   Both use stages 2-5 as an actual need with the SAME severity order (2 mild -> 5 critical),
+   so SunHelm's effect is OR'd onto the matching tier. (Stage NAMES differ - LoreRim labels
+   2 "Parched"/3 "Thirsty", SunHelm 2 "Thirsty"/3 "Parched" - but severity aligns, and the
+   in-game name isn't shown to the model, so the tuned text below is used for either source.) #}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage5Effect") or has_magic_effect(actorUUID, "_SHThirst05Display") %}
 ## Thirst
 {{ actorName }} is severely dehydrated. {{ possessivePronoun | capitalize }} mouth and throat are painfully dry, {{ possessivePronoun }} lips are cracked, and {{ subjectPronoun }} feels dizzy and weak. {{ possessivePronoun | capitalize }} head pounds and {{ subjectPronoun }} can think of little besides water. Without a drink very soon, {{ possessivePronoun }} body will begin to fail.
 
-{% elif has_magic_effect(actorUUID, "Survival_ThirstStage4Effect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ThirstStage4Effect") or has_magic_effect(actorUUID, "_SHThirst04Display") %}
 ## Thirst
 {{ actorName }} is dehydrated. {{ possessivePronoun | capitalize }} mouth is dry and sticky, a dull headache is building, and {{ possessivePronoun }} energy is flagging. {{ subjectPronoun | capitalize }} badly needs something to drink.
 
-{% elif has_magic_effect(actorUUID, "Survival_ThirstStage3Effect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ThirstStage3Effect") or has_magic_effect(actorUUID, "_SHThirst03Display") %}
 ## Thirst
 {{ actorName }} is thirsty. {{ possessivePronoun | capitalize }} mouth feels dry and {{ subjectPronoun }} keeps thinking about a cool drink. Water, ale, or mead would be very welcome.
 
-{% elif has_magic_effect(actorUUID, "Survival_ThirstStage2Effect") %}
+{% elif has_magic_effect(actorUUID, "Survival_ThirstStage2Effect") or has_magic_effect(actorUUID, "_SHThirst02Display") %}
 ## Thirst
 {{ actorName }} is parched. There's a noticeable dryness in {{ possessivePronoun }} mouth—not desperate yet, but {{ subjectPronoun }} could really go for a drink soon.
 
@@ -105,28 +127,28 @@ There's a noticeable chill in the air, and {{ actorName }} feels it. A light shi
 {% set cold_level = 0 %}
 {% set thirst_level = 0 %}
 
-{% if has_magic_effect(actorUUID, "Survival_HungerStage1DisplayEffect") %}{% set hunger_level = 1 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_HungerStage2DisplayEffect") %}{% set hunger_level = 2 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_HungerStage3DisplayEffect") %}{% set hunger_level = 3 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_HungerStage4DisplayEffect") %}{% set hunger_level = 4 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_HungerStage5DisplayEffect") %}{% set hunger_level = 5 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage1DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger01Display") %}{% set hunger_level = 1 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage2DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger02Display") %}{% set hunger_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage3DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger03Display") %}{% set hunger_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage4DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger04Display") %}{% set hunger_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_HungerStage5DisplayEffect") or has_magic_effect(actorUUID, "_SHHunger05Display") %}{% set hunger_level = 5 %}{% endif %}
 
-{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage1DisplayEffect") %}{% set fatigue_level = 1 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage2DisplayEffect") %}{% set fatigue_level = 2 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage3DisplayEffect") %}{% set fatigue_level = 3 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage4DisplayEffect") %}{% set fatigue_level = 4 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage5DisplayEffect") %}{% set fatigue_level = 5 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage1DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue01Display") or has_magic_effect(actorUUID, "_SHFatigue00Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage1DisplayEffect") %}{% set fatigue_level = 1 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage2DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue02Dispaly") or has_magic_effect(actorUUID, "MAG_ExhaustionStage2DisplayEffect") %}{% set fatigue_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage3DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue03Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage3DisplayEffect") %}{% set fatigue_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage4DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue04Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage4DisplayEffect") %}{% set fatigue_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ExhaustionStage5DisplayEffect") or has_magic_effect(actorUUID, "_SHFatigue05Display") or has_magic_effect(actorUUID, "MAG_ExhaustionStage5DisplayEffect") %}{% set fatigue_level = 5 %}{% endif %}
 
-{% if has_magic_effect(actorUUID, "Survival_ColdStage1DisplayEffect") %}{% set cold_level = 1 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ColdStage2DisplayEffect") %}{% set cold_level = 2 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ColdStage3DisplayEffect") %}{% set cold_level = 3 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ColdStage4DisplayEffect") %}{% set cold_level = 4 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ColdStage5DisplayEffect") %}{% set cold_level = 5 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage1DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage1Display") or has_magic_effect(actorUUID, "MAG_ColdStage1DisplayEffect") %}{% set cold_level = 1 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage2DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage2Display") or has_magic_effect(actorUUID, "MAG_ColdStage2DisplayEffect") %}{% set cold_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage3DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage3Display") or has_magic_effect(actorUUID, "MAG_ColdStage3DisplayEffect") %}{% set cold_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage4DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage4Display") or has_magic_effect(actorUUID, "MAG_ColdStage4DisplayEffect") %}{% set cold_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ColdStage5DisplayEffect") or has_magic_effect(actorUUID, "_SHColdStage5Display") or has_magic_effect(actorUUID, "_SHColdStage5DisplayNoDis") or has_magic_effect(actorUUID, "MAG_ColdStage5DisplayEffect") %}{% set cold_level = 5 %}{% endif %}
 
-{% if has_magic_effect(actorUUID, "Survival_ThirstStage2Effect") %}{% set thirst_level = 2 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ThirstStage3Effect") %}{% set thirst_level = 3 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ThirstStage4Effect") %}{% set thirst_level = 4 %}{% endif %}
-{% if has_magic_effect(actorUUID, "Survival_ThirstStage5Effect") %}{% set thirst_level = 5 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage2Effect") or has_magic_effect(actorUUID, "_SHThirst02Display") %}{% set thirst_level = 2 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage3Effect") or has_magic_effect(actorUUID, "_SHThirst03Display") %}{% set thirst_level = 3 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage4Effect") or has_magic_effect(actorUUID, "_SHThirst04Display") %}{% set thirst_level = 4 %}{% endif %}
+{% if has_magic_effect(actorUUID, "Survival_ThirstStage5Effect") or has_magic_effect(actorUUID, "_SHThirst05Display") %}{% set thirst_level = 5 %}{% endif %}
 
 {% if hunger_level > 1 or fatigue_level > 1 or cold_level > 1 or thirst_level > 1 %}
 ## Current Survival Status
@@ -135,10 +157,15 @@ There's a noticeable chill in the air, and {{ actorName }} feels it. A light shi
 
 {% endif %}
 {# ------------------------------------------------------------------------------
-   SNPlayerNeeds - Survival Needs (player-only). Reads the ACTUAL CC Survival Mode
-   display magic effects (Survival_HungerStageN / _ExhaustionStageN / _ColdStageN) plus
-   LoreRim's thirst effects (Survival_ThirstStageN, from Lorerim - Thirst Notifications:
-   Stage2 Parched -> Stage5 Severely Dehydrated) via the has_magic_effect decorator.
+   SNPlayerNeeds - Survival Needs (player-only). Reads survival DISPLAY magic effects via the
+   has_magic_effect decorator from EITHER supported system (both OR'd per tier, so portable):
+     * CC Survival Mode / SMI -> Survival_HungerStageN (+ Well Fed = Survival_HungerStage0HealthRegen)
+       / _ExhaustionStageN / _ColdStageN, plus thirst from LoreRim (Survival_ThirstStageN).
+     * Starfrost -> keeps CC hunger EditorIDs (Survival_HungerStage{0,1,2,4,5}; stage-3 slot hijacked
+       = small gap) but RENAMES cold/exhaustion to MAG_ColdStageN / MAG_ExhaustionStageN (SMI resolves
+       effects by FormID+plugin, so the renamed forms still apply; only the EditorID we match changed).
+     * SunHelm -> _SHHungerNN / _SHFatigueNN / _SHColdStageN / _SHThirstNN Display effects
+       (SunHelm's fatigue stage 2 is misspelled _SHFatigue02Dispaly in the mod itself).
    Renders only in first-person modes
    (transform/full/thoughts). Complements SeverActions' 0170 survival prompt, which
    tracks FOLLOWERS/NPCs via its own sever_hunger system.

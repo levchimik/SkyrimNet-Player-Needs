@@ -1,0 +1,79 @@
+{% set first_person = (render_mode == "transform" or render_mode == "full" or render_mode == "thoughts") %}
+{% if first_person %}
+{% if actorUUID and actorUUID != 0 %}
+{% set actor = decnpc(actorUUID) %}
+{% set actorName = actor.name %}
+{% set subjectPronoun = actor.subjectivePronoun %}
+{% set objectivePronoun = actor.objectivePronoun %}
+{% set possessivePronoun = actor.possessivePronoun %}
+
+{# ---- Diseases (LoreRim: Requiem entry + CC-Survival staging). Diseases are Type=Disease
+   ABILITIES the engine AddSpell's to the actor on creature-hit/trap, so has_spell(actorUUID,
+   editorID) detects them (actor-scoped -> works for the player AND a diseased NPC/follower).
+   LoreRim applies the Requiem/vanilla ENTRY ability, and CC-Survival's script progresses it to
+   Survival_Disease*2/3 (severe) over time, so we OR entry + _Trap_ + the 2/3 stage editorIDs.
+   Naming is MIXED: Ataxia/BoneBreakFever/Sanguinare = REQ_Disease_Attack_*; Rockjoint/Rattles/
+   BrainRot/Witbane = vanilla Disease*. Silent when no disease is active / on non-LoreRim setups. #}
+{% set ataxia = has_spell(actorUUID, "REQ_Disease_Attack_Ataxia") or has_spell(actorUUID, "REQ_Disease_Trap_Ataxia") or has_spell(actorUUID, "Survival_DiseaseAtaxia2") or has_spell(actorUUID, "Survival_DiseaseAtaxia3") %}
+{% set ataxia_severe = has_spell(actorUUID, "Survival_DiseaseAtaxia2") or has_spell(actorUUID, "Survival_DiseaseAtaxia3") %}
+{% set bonebreak = has_spell(actorUUID, "REQ_Disease_Attack_BoneBreakFever") or has_spell(actorUUID, "REQ_Disease_Trap_BoneBreakFever") or has_spell(actorUUID, "Survival_DiseaseBoneBreakFever1") or has_spell(actorUUID, "Survival_DiseaseBoneBreakFever2") or has_spell(actorUUID, "Survival_DiseaseBoneBreakFever3") %}
+{% set bonebreak_severe = has_spell(actorUUID, "Survival_DiseaseBoneBreakFever2") or has_spell(actorUUID, "Survival_DiseaseBoneBreakFever3") %}
+{% set rockjoint = has_spell(actorUUID, "DiseaseRockjoint") or has_spell(actorUUID, "REQ_Disease_Trap_Rockjoint") or has_spell(actorUUID, "Survival_DiseaseRockjoint2") or has_spell(actorUUID, "Survival_DiseaseRockjoint3") %}
+{% set rockjoint_severe = has_spell(actorUUID, "Survival_DiseaseRockjoint2") or has_spell(actorUUID, "Survival_DiseaseRockjoint3") %}
+{% set rattles = has_spell(actorUUID, "DiseaseRattles") or has_spell(actorUUID, "REQ_Disease_Trap_Rattles") or has_spell(actorUUID, "Survival_DiseaseRattles2") or has_spell(actorUUID, "Survival_DiseaseRattles3") %}
+{% set rattles_severe = has_spell(actorUUID, "Survival_DiseaseRattles2") or has_spell(actorUUID, "Survival_DiseaseRattles3") %}
+{% set brainrot = has_spell(actorUUID, "DiseaseBrainRot") or has_spell(actorUUID, "REQ_Disease_Trap_BrainRot") or has_spell(actorUUID, "Survival_DiseaseBrainRot1") or has_spell(actorUUID, "Survival_DiseaseBrainRot2") or has_spell(actorUUID, "Survival_DiseaseBrainRot3") %}
+{% set brainrot_severe = has_spell(actorUUID, "Survival_DiseaseBrainRot2") or has_spell(actorUUID, "Survival_DiseaseBrainRot3") %}
+{% set witbane = has_spell(actorUUID, "DiseaseWitbane") or has_spell(actorUUID, "REQ_Disease_Trap_Witbane") or has_spell(actorUUID, "Survival_DiseaseWitbane2") or has_spell(actorUUID, "Survival_DiseaseWitbane3") %}
+{% set witbane_severe = has_spell(actorUUID, "Survival_DiseaseWitbane2") or has_spell(actorUUID, "Survival_DiseaseWitbane3") %}
+{% set sanguinare = has_spell(actorUUID, "REQ_Disease_Attack_SanguinareVampiris") or has_spell(actorUUID, "REQ_Disease_Trap_SanguinareVampiris") %}
+{% set foodpoison = has_spell(actorUUID, "Survival_DiseaseFoodPoisoning") %}
+{% set ashsick = has_spell(actorUUID, "Survival_DiseaseBrownRot") or has_spell(actorUUID, "Survival_DiseaseGreenspore") or has_spell(actorUUID, "Survival_DiseaseGutworm") or has_spell(actorUUID, "DLC2DiseaseDroops") %}
+{% set any_disease = ataxia or bonebreak or rockjoint or rattles or brainrot or witbane or sanguinare or foodpoison or ashsick %}
+{% if any_disease %}
+## Illness
+{% if ataxia %}
+{% if ataxia_severe %}{{ actorName }}'s limbs barely answer {{ objectivePronoun }}, wracked by stiffness and uncontrollable shivering; anything delicate is beyond {{ objectivePronoun }}. Most likely, this is a severe case of Ataxia.{% else %}{{ actorName }}'s hands tremble and won't quite obey—anything delicate, like lockpicking or pickpocketing, has become a clumsy struggle. Most likely, this is Ataxia.{% endif %}
+{% endif %}
+{% if bonebreak %}
+{% if bonebreak_severe %}{{ actorName }}'s body is wracked with deep aching and profound weakness, {{ possessivePronoun }} strength all but gone. Most likely, this is a severe case of Bone Break Fever.{% else %}{{ actorName }} is feverish and aching, drained of energy and tiring far too quickly. Most likely, this is Bone Break Fever.{% endif %}
+{% endif %}
+{% if rockjoint %}
+{% if rockjoint_severe %}{{ actorName }}'s joints are so swollen and inflamed {{ subjectPronoun }} can barely lift a weapon. Most likely, this is a severe case of Rockjoint.{% else %}{{ actorName }}'s joints are stiff and swollen, and every weapon swing lands weak and slow. Most likely, this is Rockjoint.{% endif %}
+{% endif %}
+{% if rattles %}
+{% if rattles_severe %}{{ actorName }}'s whole frame trembles and exhaustion never lifts, {{ possessivePronoun }} breath never fully returning. Most likely, this is a severe case of the Rattles.{% else %}A deep, bone-rattling chill leaves {{ actorName }} shaky and slow to catch {{ possessivePronoun }} breath. Most likely, this is the Rattles.{% endif %}
+{% endif %}
+{% if brainrot %}
+{% if brainrot_severe %}{{ actorName }}'s mind is clouded and sluggish, {{ possessivePronoun }} magicka badly diminished. Most likely, this is a severe case of Brain Rot.{% else %}{{ actorName }}'s mind feels foggy and dull, {{ possessivePronoun }} magicka reserves withered. Most likely, this is Brain Rot.{% endif %}
+{% endif %}
+{% if witbane %}
+{% if witbane_severe %}A blinding headache overwhelms {{ actorName }}, and {{ possessivePronoun }} magicka barely regenerates at all. Most likely, this is a severe case of Witbane.{% else %}A pounding headache clouds {{ actorName }}'s thoughts, and {{ possessivePronoun }} magicka returns only sluggishly. Most likely, this is Witbane.{% endif %}
+{% endif %}
+{% if sanguinare %}
+The daylight has begun to sting {{ actorName }}'s eyes and sap {{ possessivePronoun }} strength, and a cold weakness creeps through {{ possessivePronoun }} blood. Most likely, this is Sanguinare Vampiris—and if it isn't cured, {{ subjectPronoun }} will turn into a vampire.
+{% endif %}
+{% if foodpoison %}
+{{ actorName }}'s gut churns and cramps, leaving {{ objectivePronoun }} queasy and weak. Most likely, this is food poisoning.
+{% endif %}
+{% if ashsick %}
+{{ actorName }} is gripped by a wasting sickness that saps {{ possessivePronoun }} strength. Most likely, it's one of Solstheim's ashland afflictions.
+{% endif %}
+{% endif %}
+{% endif %}
+{% endif %}
+{# ------------------------------------------------------------------------------
+   SNPlayerNeeds - Diseases (actor-scoped; player OR NPC). Surfaces the actor's active disease(s)
+   via SkyrimNet's has_spell decorator on the disease ABILITY editorIDs. LoreRim system (proven by
+   research): a diseased creature/trap applies the Requiem/vanilla ENTRY ability on hit, and
+   CC-Survival's script progresses it to Survival_Disease*2/3 (severe) over time -> detect entry +
+   _Trap_ + stage editorIDs. Naming is MIXED: Ataxia/BoneBreakFever/Sanguinare = REQ_Disease_Attack_*;
+   Rockjoint/Rattles/BrainRot/Witbane = vanilla Disease*. Symptom text is authored from each
+   disease's real mechanical effect (Ataxia=lockpick/pickpocket, BoneBreakFever=stamina,
+   Rockjoint=weapon damage, Rattles=stamina regen, BrainRot=magicka, Witbane=magicka regen;
+   Sanguinare framed as early sun-sensitivity) -- no official flavor Descriptions exist on the
+   winning records. Each entry describes the SYMPTOMS first, then a tentative "Most likely, this is
+   <disease>" diagnosis, so the model reasons from felt symptoms. Renders only in first-person modes;
+   entirely silent (spells absent) when no disease is active or on non-Requiem/non-LoreRim setups.
+   Leading lines carry render_mode + {% if to satisfy the character_bio first-5-lines rule.
+   ------------------------------------------------------------------------------ #}

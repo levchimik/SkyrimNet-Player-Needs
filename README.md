@@ -29,10 +29,13 @@ An `snpn_drunk` decorator reports how drunk any actor is — **player or NPC** �
 It also understands **tolerance**: characters with a "holds their liquor" perk (Requiem's *Drunken Combat*, *Boozy Bard*, the *Addict* trait, etc.) are described as functional and steady despite a high blood-alcohol level, not stumbling drunk.
 
 ### 🥖 Survival needs
-A first-person bio section describing the player's **hunger, thirst, cold, and exhaustion**, read live from CC Survival Mode / Survival Mode Improved (and LoreRim's thirst notifications) via `has_magic_effect`.
+A first-person bio section describing the player's **hunger (including a well-fed state), thirst, cold, and exhaustion**, read live via `has_magic_effect` from whichever survival system you run — **CC Survival Mode / Survival Mode Improved / Starfrost** or **SunHelm**. Thirst (not part of CC Survival) is read from **LoreRim's thirst notifications** or **SunHelm**.
 
 ### 😰 Stress & fear
 A first-person bio section describing the player's **stress level** (calm → breaking point) and any **creature phobias** they've picked up from near-death encounters, read from the [Stress And Fear](https://www.nexusmods.com/skyrimspecialedition/mods/116522) mod. Prompt-only and silent if that mod isn't installed.
+
+### 🤒 Diseases
+A bio section that surfaces an actor's **active diseases** — Ataxia, Bone Break Fever, Rockjoint, Rattles, Brain Rot, Witbane, Sanguinare Vampiris, food poisoning — each described with **symptoms grounded in its real in-game effect** (Rockjoint → weak, aching swings; Brain Rot → foggy mind; etc.) and flagged **severe** as it worsens. Detected via `has_spell` on the disease abilities, so it works for the **player and diseased followers/NPCs** alike. Tuned for **LoreRim / Requiem + CC-Survival** (also catches the vanilla `Disease*` forms); silent when nobody's sick.
 
 ## Requirements
 
@@ -49,8 +52,9 @@ Install the FOMOD with **Mod Organizer 2** or **Vortex** and pick your component
 - **Survival Needs prompt** — hunger/thirst/cold/exhaustion. Pure prompt, works without Core.
 - **Intoxication prompt** — the drunkenness bio section. **Requires Core.**
 - **Stress and Fear prompt** — stress level, active phobias, and overcome phobias. Pure prompt, works without Core. **Auto-selected only when [Stress And Fear](https://www.nexusmods.com/skyrimspecialedition/mods/116522) is installed**, otherwise left off.
+- **Disease prompt** — active diseases with symptoms and severity, for the player and NPCs. Pure prompt, works without Core. Tuned for LoreRim/Requiem + CC-Survival (also catches vanilla `Disease*`).
 
-The two "pure prompt" modules (Survival, Stress and Fear) need neither the ESP nor Core — they read the relevant mods through SkyrimNet's own decorators and stay silent if those mods aren't present.
+The "pure prompt" modules (Survival, Stress and Fear, Disease) need neither the ESP nor Core — they read the relevant mods through SkyrimNet's own decorators and stay silent if those mods aren't present.
 
 After installing, launch the game once, then open **SkyrimNet Settings → Events & Reactions → Player Reactions** and configure how the player reacts to eating/drinking.
 
